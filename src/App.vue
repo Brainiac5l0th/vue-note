@@ -3,6 +3,7 @@
 
   const showModal = ref(false);
   const noteText = ref("");
+  const errorMessage = ref("");
   const notes = ref([]);
 
   //max id generator
@@ -17,12 +18,17 @@
   }
   //add new note details to notes array
   const addNote =()=>{
+    
+    if(noteText.value.length<15){
+      return errorMessage.value = "Title of the note should have 15 or more characters!";
+    }
     notes.value.push({
       id: maxId(notes.value),
       text: noteText.value,
       date: new Date(),
       backgroundColor: getRandomColor()
     });
+    errorMessage.value = "";
     noteText.value = "";
     showModal.value = false;
   }
@@ -32,7 +38,8 @@
   <main>
     <div class="notes__overlay" v-show="showModal">
       <div class="notes-overlay__modal">
-        <textarea v-model="noteText" name="note" id="note" cols="30" rows="15"  placeholder="Type your note title here"></textarea>
+        <textarea v-model.trim="noteText" name="note" id="note" cols="30" rows="15"  placeholder="Type your note title here"></textarea>
+        <p v-if="errorMessage" class="notes-overlay__modal-error">{{ errorMessage }}</p>
         <div class="notes-overlay__buttons">
           <button class="notes-overlay__button notes-overlay__button-add" @click="addNote">Create Note</button>
           <button class="notes-overlay__button notes-overlay__button-close" @click="showModal=!showModal">close</button>
@@ -176,6 +183,10 @@ main{
   border-radius: 10px;
   border: 2pt solid transparent;
   outline: none;
+}
+.notes-overlay__modal-error{
+  color: tomato;
+  font-size: 12px;
 }
 .notes-overlay__buttons{
   display: flex;
