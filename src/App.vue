@@ -1,15 +1,41 @@
 <script setup>
+  import { ref } from "vue";
 
+  const showModal = ref(false);
+  const noteText = ref("");
+  const notes = ref([]);
+
+  //max id generator
+  const maxId = (givenArray) => {
+    const next = givenArray.reduce(
+      (maxId, element) => Math.max(element.id, maxId),0);
+    return next + 1;
+  };
+  //dark color generator
+  function getRandomColor() {
+    return "hsl(" + Math.random() * 360 + ", 100%, 20%)";
+  }
+  //add new note details to notes array
+  const addNote =()=>{
+    notes.value.push({
+      id: maxId(notes.value),
+      text: noteText.value,
+      date: new Date(),
+      backgroundColor: getRandomColor()
+    });
+    noteText.value = "";
+    showModal.value = false;
+  }
 </script>
 
 <template>
   <main>
-    <div class="notes__overlay">
+    <div class="notes__overlay" v-show="showModal">
       <div class="notes-overlay__modal">
-        <textarea name="note" id="note" cols="30" rows="15"  placeholder="Type your note title here"></textarea>
+        <textarea v-model="noteText" name="note" id="note" cols="30" rows="15"  placeholder="Type your note title here"></textarea>
         <div class="notes-overlay__buttons">
-          <button class="notes-overlay__button notes-overlay__button-add">Add Note</button>
-          <button class="notes-overlay__button notes-overlay__button-close">close</button>
+          <button class="notes-overlay__button notes-overlay__button-add" @click="addNote">Create Note</button>
+          <button class="notes-overlay__button notes-overlay__button-close" @click="showModal=!showModal">close</button>
       </div>
 
       </div>
@@ -17,28 +43,17 @@
     <div class="notes__container">
       <header class="notes-container__header">
         <h1 class="notes-container__header-logo">Notes</h1>
-        <button class="notes-container__header-btn">+</button>
+        <button class="notes-container__header-btn" @click="showModal=!showModal">+</button>
       </header>
       <div class="notes-container__card-container">
-        <div class="notes-container__card">
-          <p class="notes-card__main-title">This is the main text</p>
-          <p class="notes-card__date">7.6.1998</p>
-        </div>
-        <div class="notes-container__card">
-          <p class="notes-card__main-title">This is the main text</p>
-          <p class="notes-card__date">7.6.1998</p>
-        </div>
-        <div class="notes-container__card">
-          <p class="notes-card__main-title">This is the main text</p>
-          <p class="notes-card__date">7.6.1998</p>
-        </div>
-        <div class="notes-container__card">
-          <p class="notes-card__main-title">This is the main text</p>
-          <p class="notes-card__date">7.6.1998</p>
-        </div>
-        <div class="notes-container__card">
-          <p class="notes-card__main-title">This is the main text</p>
-          <p class="notes-card__date">7.6.1998</p>
+        <div 
+            v-for="note in notes" 
+            :key="note.id"
+            class="notes-container__card" 
+            :style="{ backgroundColor: note.backgroundColor }"
+          >
+          <p class="notes-card__main-title">{{ note.text }}</p>
+          <p class="notes-card__date">{{ note.date.toLocaleString() }}</p>
         </div>
         
       </div>
