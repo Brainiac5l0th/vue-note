@@ -1,0 +1,6 @@
+@import './base.css';
+
+.flex-between{
+  display: flex;
+  justify-content: space-between;
+}
