@@ -16,6 +16,11 @@
   function getRandomColor() {
     return "hsl(" + Math.random() * 360 + ", 100%, 20%)";
   }
+  function closeModal(){
+    errorMessage.value = "";
+    noteText.value = "";
+    showModal.value = false;
+  }
   //add new note details to notes array
   const addNote =()=>{
     
@@ -28,9 +33,7 @@
       date: new Date(),
       backgroundColor: getRandomColor()
     });
-    errorMessage.value = "";
-    noteText.value = "";
-    showModal.value = false;
+    closeModal();
   }
 </script>
 
@@ -38,11 +41,12 @@
   <main>
     <div class="notes__overlay" v-show="showModal">
       <div class="notes-overlay__modal">
-        <textarea v-model.trim="noteText" name="note" id="note" cols="30" rows="15"  placeholder="Type your note title here"></textarea>
+        <textarea v-model.trim="noteText" name="note" id="note" cols="30" rows="15"  placeholder="Type your note title here" 
+        class="notes-overlay__modal-textArea"></textarea>
         <p v-if="errorMessage" class="notes-overlay__modal-error">{{ errorMessage }}</p>
         <div class="notes-overlay__buttons">
           <button class="notes-overlay__button notes-overlay__button-add" @click="addNote">Create Note</button>
-          <button class="notes-overlay__button notes-overlay__button-close" @click="showModal=!showModal">close</button>
+          <button class="notes-overlay__button notes-overlay__button-close" @click="closeModal">close</button>
       </div>
 
       </div>
@@ -158,13 +162,13 @@ main{
   width: 768px;
   background: var(--color-background);
   border-radius: 10px;
-  padding: 32px;
+  padding: 40px 32px;
   position: relative;
   display: flex;
-  gap: 10px;
+  gap: 20px;
   flex-direction: column;
 }
-.notes-overlay__modal textarea{
+.notes-overlay__modal-textArea{
   border-radius: 10px;
   padding: 20px;
   resize: none;
